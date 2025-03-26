@@ -1,0 +1,15 @@
+[package]
+name = "bevy_hex_grid"
+version = "0.1.0"
+edition = "2021"
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "bevy_hex_grid"
+path = "src/main.rs"
+
+[dependencies]
+bevy = "0.11"
+rand = "0.8" 
+noise = "0.8"
