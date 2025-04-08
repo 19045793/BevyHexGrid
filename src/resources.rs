@@ -8,59 +8,54 @@ use crate::utils::axial_to_world;
 #[derive(Resource)]
 pub struct MouseState {
     pub pressed: bool,
-    pub start_position: Vec2,
     pub last_position: Vec2,
-    pub current_button: Option<MouseButton>,
-    pub was_drag: bool,
-    pub drag_threshold: f32,
     pub is_dragging: bool,
+    pub was_drag: bool,
     pub drag_button: Option<MouseButton>,
-}
-
-impl Default for MouseState {
-    fn default() -> Self {
-        Self {
-            pressed: false,
-            start_position: Vec2::ZERO,
-            last_position: Vec2::ZERO,
-            current_button: None,
-            was_drag: false,
-            drag_threshold: 10.0,
-            is_dragging: false,
-            drag_button: None,
-        }
-    }
+    pub drag_threshold: f32,
 }
 
 impl MouseState {
+    pub fn new() -> Self {
+        Self {
+            pressed: false,
+            last_position: Vec2::ZERO,
+            is_dragging: false,
+            was_drag: false,
+            drag_button: None,
+            drag_threshold: 5.0, // Adjust this value to change sensitivity
+        }
+    }
+
     pub fn start_press(&mut self, position: Vec2, button: MouseButton) {
         self.pressed = true;
-        self.start_position = position;
         self.last_position = position;
-        self.current_button = Some(button);
         self.is_dragging = false;
         self.was_drag = false;
         self.drag_button = Some(button);
     }
 
-    pub fn end_press(&mut self) {  // Removed MouseButton parameter
+    pub fn end_press(&mut self) {
         self.pressed = false;
         self.is_dragging = false;
-        self.current_button = None;
         self.drag_button = None;
+        // Note: we keep was_drag flag until it's explicitly reset
     }
 
-    pub fn check_drag(&mut self, position: Vec2) -> bool {
+    pub fn reset_drag_state(&mut self) {
+        self.was_drag = false;
+    }
+
+    pub fn check_drag(&mut self, current_position: Vec2) -> bool {
         if self.pressed {
-            let delta = position - self.start_position;
-            let is_drag = delta.length() > self.drag_threshold;
-            self.is_dragging = is_drag;  // Only set during active drag
-            self.was_drag |= is_drag;    // Preserve drag history for release check
-            println!("Check drag: delta={:?}, is_dragging={}", delta, self.is_dragging);
-            is_drag
-        } else {
-            false
+            let delta = current_position - self.last_position;
+            if delta.length() > self.drag_threshold {
+                self.is_dragging = true;
+                self.was_drag = true;
+                return true;
+            }
         }
+        self.is_dragging
     }
 
     pub fn update_position(&mut self, position: Vec2) {
@@ -68,6 +63,11 @@ impl MouseState {
     }
 }
 
+impl Default for MouseState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 
 

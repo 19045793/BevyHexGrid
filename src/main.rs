@@ -24,7 +24,7 @@ fn main() {
             }),
             ..default()
         }))
-        .add_plugins(SelectionSystemPlugin)  // Add the selection plugin
+        .add_plugins(SelectionPlugin)  // Add the selection plugin
         .init_resource::<CameraConfig>()
         .init_resource::<ContextMenuState>()  // Still needed for the new context menu
         .init_resource::<DetailedMenuState>()

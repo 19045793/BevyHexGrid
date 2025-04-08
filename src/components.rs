@@ -112,15 +112,6 @@ pub struct Selected;
 #[derive(Component, Debug)]
 pub struct Hovered;
 
-#[derive(Component, Debug, Clone)]
-pub enum SelectableType {
-    Tile,
-    Unit,
-    Building,
-    Item,
-    UiDetail,  // New variant for UI details
-}
-
 #[derive(Component)]
 pub struct SelectionOutline;
 
@@ -184,14 +175,38 @@ pub struct DetailedMenuButton;
 #[derive(Component)]
 pub struct UiBlocking; // Marker component for UI elements that block world selection// components.rs
 
-#[derive(Component)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SelectableType {
+    Unit,
+    Tile, 
+    Building,
+    UI,
+}
+
+impl Default for SelectableType {
+    fn default() -> Self {
+        SelectableType::Unit
+    }
+}
+
+// Component for entities that can be selected
+#[derive(Component, Default)]
 pub struct Selectable {
     pub is_selected: bool,
     pub is_hovered: bool,
+    pub selectable_type: SelectableType,
 }
 
-impl Default for Selectable {
-    fn default() -> Self {
-        Self { is_selected: false, is_hovered: false }
+impl Selectable {
+    pub fn new(selectable_type: SelectableType) -> Self {
+        Self {
+            is_selected: false,
+            is_hovered: false,
+            selectable_type,
+        }
     }
 }
+
+// You can also add a visual component for selection indicators
+#[derive(Component)]
+pub struct SelectionIndicator;

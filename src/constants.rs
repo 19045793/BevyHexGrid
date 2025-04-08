@@ -67,11 +67,7 @@ pub mod selection {
                     threshold: super::HEX_SIZE * 0.4,
                     priority: 2 
                 },
-                SelectableType::Item => SelectionThreshold { 
-                    threshold: super::HEX_SIZE * 0.2,
-                    priority: 1 
-                },
-                SelectableType::UiDetail => SelectionThreshold { 
+                SelectableType::UI => SelectionThreshold { 
                     threshold: super::HEX_SIZE * 0.2,
                     priority: 1 
                 },
